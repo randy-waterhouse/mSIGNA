@@ -1,0 +1,27 @@
+os:
+  - linux
+#  - osx
+
+language: cpp
+
+compiler:
+  - gcc
+
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -y ssh build-essential libboost-all-dev libssl-dev libsqlite3-dev qtbase5-dev qt5-default
+  - ./deps/build-scripts/install-libcutl.sh
+  - ./deps/build-scripts/install-odb.sh
+  - ./deps/build-scripts/install-libodb.sh
+  - ./deps/build-scripts/install-libodb-sqlite.sh
+  - ./deps/build-scripts/install-libqrencode.sh
+
+script:
+  - ./build-all.sh linux
+#  - ./build-all.sh mingw64
+#  - ./build-all.sh osx
+
+branches:
+  only:
+    - master
+
