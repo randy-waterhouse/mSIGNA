@@ -2,6 +2,7 @@
 ===============================================================================
 Copyright (c) 2013-2015 Ciphrex Corporation, All Rights Reserved.
 
+[![Build Status](https://travis-ci.org/randy-waterhouse/mSIGNA.svg?branch=master)](https://travis-ci.org/randy-waterhouse/mSIGNA)
 
 mSIGNA is an interactive desktop application for transacting on the bitcoin network
 supporting m-of-n signature policies and multiuser/multidevice account management.
