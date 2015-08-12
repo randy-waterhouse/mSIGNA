@@ -1,6 +1,7 @@
 #!/bin/sh
 set -ex
 
+## Need to run that in top level dir and use "sudo ./build-all-deps.sh
 ## Install binaries from repos for linux
 
 sudo apt-get update -qq
