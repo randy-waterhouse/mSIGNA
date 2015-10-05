@@ -1,7 +1,7 @@
 dnl require autoconf 2.69
 AC_PREREQ([2.69])
 AC_INIT([mSIGNA], [0.9.5], [info@ciphrex.com])
-AC_CONFIG_SRCDIR([src/mainwindow.h])
+AC_CONFIG_SRCDIR([src/main.cpp])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([build-aux/m4])
@@ -17,6 +17,7 @@ AC_PROG_MAKE_SET
 dnl Automake init set-up and checks
 AM_INIT_AUTOMAKE([no-define subdir-objects foreign])
 
+dnl Libtool init and settings
 LT_INIT
 
 # Checks for libraries.
@@ -81,8 +82,7 @@ AC_CHECK_FUNCS([clock_gettime fdatasync getpagesize gettimeofday iswprint localt
 
 AC_CONFIG_FILES([Makefile])
 
-# Automatically identified existing Makefiles/makefiles (neeed deprecating)
-#                 deps/CoinCore/Makefile
+# Automatically identified existing Makefiles/makefiles (need deprecating)
 #                 deps/CoinCore/examples/hdkeychain/Makefile
 #                 deps/CoinCore/examples/keygen/makefile
 #                 deps/CoinCore/examples/listener/makefile
@@ -96,19 +96,13 @@ AC_CONFIG_FILES([Makefile])
 #                 deps/CoinCore/tests/hdwallets/Makefile
 #                 deps/CoinCore/tests/partialmerkletree/Makefile
 #                 deps/CoinCore/tests/secp256k1/Makefile
-#                 deps/CoinDB/Makefile
-#                 deps/CoinQ/Makefile
 #                 deps/CoinQ/examples/clivault/Makefile
 #                 deps/CoinQ/examples/netsync/Makefile
 #                 deps/CoinQ/examples/peer/Makefile
-#                 deps/Signals/Makefile
 #                 deps/Signals/test/Makefile
 #                 deps/WebSocketClient/Makefile
-#                 deps/logger/Makefile
 #                 deps/logger/examples/simple/Makefile
 #                 deps/sqlite3/Makefile
-#                 deps/stdutils/Makefile
-#                 deps/sysutils/Makefile
 #                 tests/numberformats/Makefile
 #                 tests/updates/Makefile
 #                 vaultd/Makefile]
