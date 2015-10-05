@@ -100,30 +100,32 @@ set -x
 set -e
 
 cd deps/logger
-make $OPTIONS
-make install
+make $OPTIONS -f makefile.static
+make install -f makefile.static
 
 cd ../Signals
-make install
+make $OPTIONS -f makefile.static
+make install -f makefile.static
 
 cd ../stdutils
-make install
+make $OPTIONS -f makefile.static
+make install -f makefile.static
 
 cd ../sysutils
-make $OPTIONS
-make install
+make $OPTIONS -f makefile.static
+make install -f makefile.static
 
 cd ../CoinCore
-make $OPTIONS
-make install
+make $OPTIONS -f makefile.static
+make install -f makefile.static
 
 cd ../CoinQ
-make $OPTIONS
-make install
+make $OPTIONS -f makefile.static
+make install -f makefile.static
 
 cd ../CoinDB
-make lib $OPTIONS
-make install_lib $OPTIONS
+make lib $OPTIONS -f makefile.static
+make install_lib $OPTIONS -f makefile.static
 
 if [ $libs_only ]
 then
@@ -132,14 +134,14 @@ fi
 
 if [ $tools_only ]
 then
-    make tools $OPTIONS
+    make tools $OPTIONS -f makefile.static
     set +x
     echo
     echo "All dependencies built."
     echo
     echo "To install coindb and syncdb tools, run the following commands:"
     echo "  $ cd deps/CoinDB"
-    echo "  $ sudo make install_tools"
+    echo "  $ sudo make install_tools -f makefile.static"
     echo
     exit
 fi
@@ -159,7 +161,7 @@ then
     fi
 fi
 
-${QMAKE_PATH}qmake $SPEC CONFIG+=$BUILD_TYPE && make $OPTIONS
+${QMAKE_PATH}qmake $SPEC CONFIG+=$BUILD_TYPE -o makefile.static && make $OPTIONS -f makefile.static
 
 if [[ "$OS" == "osx" ]]
 then
