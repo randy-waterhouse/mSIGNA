@@ -1,0 +1,44 @@
+lib_LTLIBRARIES		=	libCoinCore.la
+
+libCoinCore_la_SOURCES	=	$(CoinCore_sources) $(CoinCore_headers)		\
+				$(scrypt_sources) $(hashfunc_sources)
+
+libCoinCore_la_CXXFLAGS	=	$(AM_CXXFLAGS) -I../include
+
+#########################
+
+CoinCore_sources =		\
+        src/aes.cpp		\
+        src/bip39.cpp		\
+        src/hdkeys.cpp		\
+        src/secp256k1.cpp	\
+        src/BloomFilter.cpp	\
+        src/CoinKey.cpp		\
+        src/CoinNodeData.cpp	\
+        src/IPv6.cpp		\
+        src/MerkleTree.cpp	\
+        src/StandardTransactions.cpp
+
+CoinCore_headers =		\
+        src/encodings.h		\
+        src/hash.h		\
+        src/hashblock.h		\
+        src/jsonResult.h	\
+        src/numericdata.h	\
+        src/random.h		\
+        src/typedefs.h		\
+        src/uint256.h		\
+        src/Base58Check.h	\
+        src/BigInt.h
+
+scrypt_sources = \
+        src/scrypt/scrypt.cpp
+
+hashfunc_sources = \
+        src/hashfunc/blake.c	\
+        src/hashfunc/bmw.c	\
+        src/hashfunc/groestl.c	\
+        src/hashfunc/jh.c	\
+        src/hashfunc/keccak.c	\
+        src/hashfunc/skein.c
+

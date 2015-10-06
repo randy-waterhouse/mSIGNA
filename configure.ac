@@ -80,7 +80,123 @@ AC_FUNC_REALLOC
 AC_FUNC_STRERROR_R
 AC_CHECK_FUNCS([clock_gettime fdatasync getpagesize gettimeofday iswprint localtime_r memmove memset select socket strchr strerror strstr strtol strtoul strtoull utime])
 
-AC_CONFIG_FILES([Makefile])
+## BOOST detection
+AX_BOOST_BASE([1.25.0])
+AX_BOOST_FILESYSTEM
+AX_BOOST_PROGRAM_OPTIONS
+AX_BOOST_REGEX
+AX_BOOST_SYSTEM
+AX_BOOST_THREAD
+AC_SUBST([BOOST_LIBS],["$BOOST_LDFLAGS $BOOST_THREAD_LIB $BOOST_SYSTEM_LIB"])
+AC_DEFINE([HAVE_BOOST], [1], [We are go for boost])
+
+## Standard build flag declaration (here for now)
+AC_SUBST([STD_CXXFLAGS],['-std=c++0x -DBOOST_SYSTEM_NOEXCEPT=""'])
+
+
+##############################
+## Build Configuration Options
+
+## (Option) Signal Handler ##
+
+AC_ARG_ENABLE(
+	sighandler,
+	AS_HELP_STRING(
+		[--enable-sighandler],
+		[enable sighandler, default: no]),
+	[case "${enableval}" in
+		yes)	sighandler=true ;;
+		no)	sighandler=false ;;
+		*)	AC_MSG_ERROR([bad value ${enableval} for --disable-sighandler]) ;;
+		esac],
+	[sighandler=false])
+
+AM_CONDITIONAL(ENABLE_SIGNAL_HANDLING, test x"$sighandler" == x"true")
+
+if test x"$sighandler" == x"true"; then
+	AC_DEFINE([SIGNAL_HANDLING], [1], [Using Signal Handling])
+fi
+
+## (Option) Warnings ##
+
+AC_ARG_ENABLE(
+	warnings,
+	AS_HELP_STRING(
+		[--enable-warnings],
+		[enable warnings, default: no]),
+	[case "${enableval}" in
+		yes) warnings=true ;;
+		no)  warnings=false ;;
+		*)   AC_MSG_ERROR([bad value ${enableval} for --enable-warnings]) ;;
+		esac],
+	[warnings=false])
+
+AM_CONDITIONAL(ENABLE_WARNINGS, test x"$warnings" == x"true")
+
+if test x"$warnings" == x"true"; then
+
+	AC_SUBST([WARN_CXXFLAGS],
+	["-Wall -Waddress -Woverloaded-virtual -Wshadow -Wconversion -Wno-unknown-pragmas"])
+fi
+
+## (Option) Build In Release Mode ##
+
+AC_ARG_ENABLE([debug],
+	AS_HELP_STRING([--enable-debug],[enable debug, default: no]),
+	[case "${enableval}" in
+		yes) debug=true ;;
+		no)  debug=false ;;
+		*)   AC_MSG_ERROR([bad value ${enableval} for --enable-debug]) ;;
+		esac],[debug=false])
+AM_CONDITIONAL([ENABLE_DEBUG], [test x$debug == x"true"])
+
+
+AC_ARG_ENABLE([release],
+	AS_HELP_STRING([--enable-release],[enable release, default: no]),
+	[case "${enableval}" in
+		yes) release=true ;;
+		no)  release=false ;;
+		*)   AC_MSG_ERROR([bad value ${enableval} for --enable-release]) ;;
+		esac],[release=false])
+AM_CONDITIONAL([ENABLE_RELEASE], [test x$release == x"true"])
+
+if test x"$debug" == x"true" -a x"$release" == x"true"; then
+	AC_MSG_ERROR([You must not set both release and debug modes! (remove either: --enable-debug or --enable-release).])
+fi
+
+if test x"$debug" == x"false" -a x"$release" == x"false"; then
+	AC_MSG_RESULT([defaulting to RELEASE mode!])
+	release=true
+	AM_CONDITIONAL([ENABLE_RELEASE], [test x$release == x"true"])
+fi
+
+if test x"$debug" == x"true"; then
+	if test x"$ac_cv_ot_clang" == x"true"; then
+		AC_SUBST([DBG_CXXFLAGS],["-g3 -O0 -fPIC"])
+	else
+		AC_SUBST([DBG_CXXFLAGS],["-g3 -O0 -fPIC -DPIC"])
+	fi
+	AC_DEFINE([DEBUG], [1], [Building in Debug Mode])
+fi
+
+if test x"$release" == x"true"; then
+	if test x"$ac_cv_clang" == x"true"; then
+		AC_SUBST([REL_CXXFLAGS],["-g0 -O3 -fPIC -D_FORTIFY_SOURCE=2"])
+	else
+		AC_SUBST([REL_CXXFLAGS],["-g0 -O0 -fPIC -D_FORTIFY_SOURCE=2 --param ssp-buffer-size=4 -fstack-protector-all -fstack-check -Wstack-protector"])
+	fi
+	AC_DEFINE([RELEASE], [1], [Building in Release Mode])
+fi
+
+
+#####   Output to AM   #####
+#AC_SUBST([DEPS_CFLAGS],	["$PROTOBUF_CFLAGS $CHAI_CFLAGS $ZMQ_CFLAGS $KRG_CFLAGS $OPENSSL_CFLAGS $OPENSSL_INCLUDES $BOOST_CPPFLAGS $PTHREAD_CFLAGS"])
+
+#AC_SUBST([DEPS_LIBS],	["$PROTOBUF_LIBS $ZMQ_LIBS $MSG_LIBS $KRG_LIBS $OPENSSL_LDFLAGS $OPENSSL_LIBS $BOOST_LIBS -ldl $PTHREAD_LIBS"])
+
+AC_SUBST([AM_CXXFLAGS],	["$STD_CXXFLAGS $DBG_CXXFLAGS $REL_CXXFLAGS $WARN_CXXFLAGS"])
+
+AC_CONFIG_FILES([Makefile deps/CoinCore/Makefile])
 
 # Automatically identified existing Makefiles/makefiles (need deprecating)
 #                 deps/CoinCore/examples/hdkeychain/Makefile
