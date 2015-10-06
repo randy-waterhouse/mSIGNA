@@ -1,6 +1,6 @@
 lib_LTLIBRARIES		=	libCoinDB.la
 
-libCoinDB_la_CXXFLAGS	=	$(AM_CXXFLAGS) -Isrc -I../include
+libCoinDB_la_CXXFLAGS	=	$(AM_CXXFLAGS) -Isrc -I../include "-DDATABASE_SQLITE"
 
 libCoinDB_la_SOURCES	=	$(CoinDB_sources) $(logger_sources) $(sysutils_sources)
 
@@ -18,8 +18,8 @@ libCoinDB_la_LIBADD	=	$(top_builddir)/deps/CoinCore/libCoinCore.la	\
 CoinDB_sources =		\
        src/Schema.cpp		\
        src/Vault.cpp		\
-       src/SynchedVault.cpp
-##      src/Schema-odb-$(DB).cpp
+       src/SynchedVault.cpp	\
+       src/Schema-odb-sqlite.cxx
 
 
 logger_sources = ../logger/src/logger.cpp
