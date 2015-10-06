@@ -1,10 +1,17 @@
 lib_LTLIBRARIES		=	libCoinQ.la
 
-libCoinQ_la_CXXFLAGS	=	$(AM_CXXFLAGS) -I../include
+libCoinQ_la_CXXFLAGS	=	$(AM_CXXFLAGS) -Isrc -I../include
 
-libCoinQ_la_SOURCES	=	$(CoinQ_sources) $(CoinQ_headers)		\
-				$(scrypt_sources) $(hashfunc_sources)
+libCoinQ_la_SOURCES	=	$(CoinQ_sources) $(logger_sources) $(sysutils_sources)
 
+libCoinQ_la_LIBADD	=	$(top_builddir)/deps/CoinCore/libCoinCore.la	\
+                                $(DEPS_LIBS) -lcrypto
+
+#libCoinQ_la_DEPENDENCIES	= $(top_builddir)/deps/CoinCore/libCoinCore.la
+
+#libCoinQ_la_LDFLAGS	=	--no-undefined
+
+#############################################################################3
 #########################
 
 CoinQ_sources =			\
@@ -18,27 +25,7 @@ CoinQ_sources =			\
     src/CoinQ_filter.cpp	\
     src/BlockchainDownload.cpp
 
+logger_sources = ../logger/src/logger.cpp
 
-CoinQ_headers =		\
-        src/encodings.h		\
-        src/hash.h		\
-        src/hashblock.h		\
-        src/jsonResult.h	\
-        src/numericdata.h	\
-        src/random.h		\
-        src/typedefs.h		\
-        src/uint256.h		\
-        src/Base58Check.h	\
-        src/BigInt.h
-
-scrypt_sources =		\
-        src/scrypt/scrypt.cpp
-
-hashfunc_sources = \
-        src/hashfunc/blake.c \
-        src/hashfunc/bmw.c \
-        src/hashfunc/groestl.c \
-        src/hashfunc/jh.c \
-        src/hashfunc/keccak.c \
-        src/hashfunc/skein.c
+sysutils_sources =  ../sysutils/src/filesystem.cpp
 

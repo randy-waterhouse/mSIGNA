@@ -8,35 +8,29 @@ AC_CONFIG_MACRO_DIR([build-aux/m4])
 
 AC_CANONICAL_HOST
 
-# Checks for programs.
-AC_PROG_CXX
-AC_PROG_CC
+dnl Checks for build programs.
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
+AC_PROG_CXX
+AC_PROG_CC
+AC_PROG_CPP
+: ${CXXFLAGS=""}
+: ${CFLAGS=""}
+: ${CPPFLAGS=""}
 
 dnl Automake init set-up and checks
-AM_INIT_AUTOMAKE([no-define subdir-objects foreign])
+AM_INIT_AUTOMAKE([1.10 no-define subdir-objects foreign])
+m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
 dnl Libtool init and settings
 LT_INIT
 
+dnl Check for pkg-config
+PKG_PROG_PKG_CONFIG([0.25])
+
 # Checks for libraries.
-# FIXME: Replace `main' with a function in `-lCoinClasses':
-AC_CHECK_LIB([CoinClasses], [main])
-# FIXME: Replace `main' with a function in `-lCoinCore':
-AC_CHECK_LIB([CoinCore], [main])
-# FIXME: Replace `main' with a function in `-lCoinDB':
-AC_CHECK_LIB([CoinDB], [main])
-# FIXME: Replace `main' with a function in `-lCoinQ':
-AC_CHECK_LIB([CoinQ], [main])
 # FIXME: Replace `main' with a function in `-lJsonRpc':
 AC_CHECK_LIB([JsonRpc], [main])
-# FIXME: Replace `main' with a function in `-lWebSocketClient':
-AC_CHECK_LIB([WebSocketClient], [main])
-# FIXME: Replace `main' with a function in `-lWebSocketServer':
-AC_CHECK_LIB([WebSocketServer], [main])
-# FIXME: Replace `main' with a function in `-lboost_regex':
-AC_CHECK_LIB([boost_regex], [main])
 # FIXME: Replace `main' with a function in `-lcrypto':
 AC_CHECK_LIB([crypto], [main])
 # FIXME: Replace `main' with a function in `-llogger':
@@ -45,8 +39,6 @@ AC_CHECK_LIB([logger], [main])
 AC_CHECK_LIB([mswsock], [main])
 # FIXME: Replace `main' with a function in `-lodb':
 AC_CHECK_LIB([odb], [main])
-# FIXME: Replace `main' with a function in `-lpthread':
-AC_CHECK_LIB([pthread], [main])
 # FIXME: Replace `main' with a function in `-lsysutils':
 AC_CHECK_LIB([sysutils], [main])
 # FIXME: Replace `main' with a function in `-lws2_32':
@@ -80,6 +72,10 @@ AC_FUNC_REALLOC
 AC_FUNC_STRERROR_R
 AC_CHECK_FUNCS([clock_gettime fdatasync getpagesize gettimeofday iswprint localtime_r memmove memset select socket strchr strerror strstr strtol strtoul strtoull utime])
 
+## pthread detection ##
+AX_PTHREAD
+CC="$PTHREAD_CC"
+
 ## BOOST detection
 AX_BOOST_BASE([1.25.0])
 AX_BOOST_FILESYSTEM
@@ -87,7 +83,7 @@ AX_BOOST_PROGRAM_OPTIONS
 AX_BOOST_REGEX
 AX_BOOST_SYSTEM
 AX_BOOST_THREAD
-AC_SUBST([BOOST_LIBS],["$BOOST_LDFLAGS $BOOST_THREAD_LIB $BOOST_SYSTEM_LIB"])
+AC_SUBST([BOOST_LIBS],["$BOOST_LDFLAGS $BOOST_FILESYSTEM_LIB $BOOST_PROGRAM_OPTIONS_LIB $BOOST_REGEX_LIB $BOOST_SYSTEM_LIB $BOOST_THREAD_LIB"])
 AC_DEFINE([HAVE_BOOST], [1], [We are go for boost])
 
 ## Standard build flag declaration (here for now)
@@ -190,13 +186,13 @@ fi
 
 
 #####   Output to AM   #####
-#AC_SUBST([DEPS_CFLAGS],	["$PROTOBUF_CFLAGS $CHAI_CFLAGS $ZMQ_CFLAGS $KRG_CFLAGS $OPENSSL_CFLAGS $OPENSSL_INCLUDES $BOOST_CPPFLAGS $PTHREAD_CFLAGS"])
+#AC_SUBST([DEPS_CFLAGS],	["$OPENSSL_CFLAGS $OPENSSL_INCLUDES $BOOST_CPPFLAGS $PTHREAD_CFLAGS"])
 
-#AC_SUBST([DEPS_LIBS],	["$PROTOBUF_LIBS $ZMQ_LIBS $MSG_LIBS $KRG_LIBS $OPENSSL_LDFLAGS $OPENSSL_LIBS $BOOST_LIBS -ldl $PTHREAD_LIBS"])
+AC_SUBST([DEPS_LIBS],	["$OPENSSL_LDFLAGS $OPENSSL_LIBS $BOOST_LIBS -ldl $PTHREAD_LIBS"])
 
 AC_SUBST([AM_CXXFLAGS],	["$STD_CXXFLAGS $DBG_CXXFLAGS $REL_CXXFLAGS $WARN_CXXFLAGS"])
 
-AC_CONFIG_FILES([Makefile deps/CoinCore/Makefile])
+AC_CONFIG_FILES([Makefile deps/CoinCore/Makefile deps/CoinQ/Makefile deps/CoinDB/Makefile])
 
 # Automatically identified existing Makefiles/makefiles (need deprecating)
 #                 deps/CoinCore/examples/hdkeychain/Makefile
