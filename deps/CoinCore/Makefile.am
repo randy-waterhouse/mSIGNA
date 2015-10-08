@@ -1,9 +1,13 @@
+# Copyright (c) 2015-2017 secureTXS (NZ) Ltd., All Rights Reserved.
+#
 lib_LTLIBRARIES		=	libCoinCore.la
 
 libCoinCore_la_SOURCES	=	$(CoinCore_sources) $(CoinCore_headers)		\
 				$(scrypt_sources) $(hashfunc_sources)
 
 libCoinCore_la_CXXFLAGS	=	$(AM_CXXFLAGS) -I../include
+
+libCoinCore_la_LDFLAGS	=	--no-undefined
 
 #########################
 
