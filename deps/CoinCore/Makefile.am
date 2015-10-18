@@ -2,8 +2,7 @@
 #
 lib_LTLIBRARIES		=	libCoinCore.la
 
-libCoinCore_la_SOURCES	=	$(CoinCore_sources) $(CoinCore_headers)		\
-				$(scrypt_sources) $(hashfunc_sources)
+libCoinCore_la_SOURCES	=	$(CoinCore_sources) $(scrypt_sources) $(hashfunc_sources)
 
 libCoinCore_la_CXXFLAGS	=	$(AM_CXXFLAGS) -I../include
 
@@ -22,18 +21,6 @@ CoinCore_sources =		\
         src/IPv6.cpp		\
         src/MerkleTree.cpp	\
         src/StandardTransactions.cpp
-
-CoinCore_headers =		\
-        src/encodings.h		\
-        src/hash.h		\
-        src/hashblock.h		\
-        src/jsonResult.h	\
-        src/numericdata.h	\
-        src/random.h		\
-        src/typedefs.h		\
-        src/uint256.h		\
-        src/Base58Check.h	\
-        src/BigInt.h
 
 scrypt_sources = \
         src/scrypt/scrypt.cpp

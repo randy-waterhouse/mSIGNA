@@ -23,3 +23,11 @@ CoinDB_sources =		\
        src/Vault.cpp		\
        src/SynchedVault.cpp	\
        src/Schema-odb-sqlite.cxx
+
+# Special rules for odb to generate compiled dependencies
+#
+odb/Schema-odb-$(DB).hxx: src/Schema.h
+	$(ODB) --output-dir odb/ --std c++11 $(ODB_DB) --database $(DB) --odb-file-suffix -odb-$(DB) --changelog-file-suffix -$(DB) --generate-query --generate-schema --schema-format embedded $(ODB_INCLUDE_PATH) $<
+
+odb/Schema-odb-$(DB).cxx: odb/Schema-odb-$(DB).hxx
+
