@@ -14,7 +14,7 @@ CoinCore_sources =		\
         src/aes.cpp		\
         src/bip39.cpp		\
         src/hdkeys.cpp		\
-        src/secp256k1.cpp	\
+        src/secp256k1_openssl.cpp	\
         src/BloomFilter.cpp	\
         src/CoinKey.cpp		\
         src/CoinNodeData.cpp	\
