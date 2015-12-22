@@ -2,7 +2,7 @@ dnl Copyright (c) 2015-2017 secureTXS (NZ) Ltd., All Rights Reserved.
 
 dnl require autoconf 2.69
 AC_PREREQ([2.69])
-AC_INIT([mSIGNA], [0.9.5], [info@ciphrex.com],[mSIGNA],[https://github.com/ciphrex/mSIGNA])
+AC_INIT([mSIGNA], [0.9.6], [info@ciphrex.com],[mSIGNA],[https://github.com/ciphrex/mSIGNA])
 AC_CONFIG_SRCDIR([src/main.cpp])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_AUX_DIR([build-aux])
