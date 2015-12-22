@@ -5600,6 +5600,18 @@ namespace odb
     user_type_;
 
     static const user_type_ user;
+
+    // propagation_protocol
+    //
+    typedef
+    sqlite::query_column<
+      sqlite::value_traits<
+        ::std::string,
+        sqlite::id_text >::query_type,
+      sqlite::id_text >
+    propagation_protocol_type_;
+
+    static const propagation_protocol_type_ propagation_protocol;
   };
 
   template <typename A>
@@ -5671,6 +5683,11 @@ namespace odb
   const typename pointer_query_columns< ::CoinDB::Tx, id_sqlite, A >::user_type_
   pointer_query_columns< ::CoinDB::Tx, id_sqlite, A >::
   user (A::table_name, "\"user\"", 0);
+
+  template <typename A>
+  const typename pointer_query_columns< ::CoinDB::Tx, id_sqlite, A >::propagation_protocol_type_
+  pointer_query_columns< ::CoinDB::Tx, id_sqlite, A >::
+  propagation_protocol (A::table_name, "\"propagation_protocol\"", 0);
 
   template <>
   class access::object_traits_impl< ::CoinDB::Tx, id_sqlite >:
@@ -5758,6 +5775,12 @@ namespace odb
       //
       long long user_value;
       bool user_null;
+
+      // propagation_protocol_
+      //
+      details::buffer propagation_protocol_value;
+      std::size_t propagation_protocol_size;
+      bool propagation_protocol_null;
 
       std::size_t version;
     };
@@ -5925,7 +5948,7 @@ namespace odb
 
     typedef sqlite::query_base query_base_type;
 
-    static const std::size_t column_count = 14UL;
+    static const std::size_t column_count = 15UL;
     static const std::size_t id_column_count = 1UL;
     static const std::size_t inverse_column_count = 0UL;
     static const std::size_t readonly_column_count = 0UL;
@@ -9084,6 +9107,18 @@ namespace odb
     };
 
     static const user_type_ user;
+
+    // propagation_protocol
+    //
+    typedef
+    sqlite::query_column<
+      sqlite::value_traits<
+        ::std::string,
+        sqlite::id_text >::query_type,
+      sqlite::id_text >
+    propagation_protocol_type_;
+
+    static const propagation_protocol_type_ propagation_protocol;
   };
 
   template <typename A>
@@ -9155,6 +9190,11 @@ namespace odb
   const typename query_columns< ::CoinDB::Tx, id_sqlite, A >::user_type_
   query_columns< ::CoinDB::Tx, id_sqlite, A >::
   user (A::table_name, "\"user\"", 0);
+
+  template <typename A>
+  const typename query_columns< ::CoinDB::Tx, id_sqlite, A >::propagation_protocol_type_
+  query_columns< ::CoinDB::Tx, id_sqlite, A >::
+  propagation_protocol (A::table_name, "\"propagation_protocol\"", 0);
 
   // KeychainView
   //

@@ -15017,6 +15017,14 @@ namespace odb
     //
     t[13UL] = false;
 
+    // propagation_protocol_
+    //
+    if (t[14UL])
+    {
+      i.propagation_protocol_value.capacity (i.propagation_protocol_size);
+      grew = true;
+    }
+
     return grew;
   }
 
@@ -15134,6 +15142,17 @@ namespace odb
     b[n].type = sqlite::bind::integer;
     b[n].buffer = &i.user_value;
     b[n].is_null = &i.user_null;
+    n++;
+
+    // propagation_protocol_
+    //
+    b[n].type = sqlite::image_traits<
+      ::std::string,
+      sqlite::id_text>::bind_value;
+    b[n].buffer = i.propagation_protocol_value.data ();
+    b[n].size = &i.propagation_protocol_size;
+    b[n].capacity = i.propagation_protocol_value.capacity ();
+    b[n].is_null = &i.propagation_protocol_null;
     n++;
   }
 
@@ -15412,6 +15431,25 @@ namespace odb
         i.user_null = true;
     }
 
+    // propagation_protocol_
+    //
+    {
+      ::std::string const& v =
+        o.propagation_protocol_;
+
+      bool is_null (false);
+      std::size_t cap (i.propagation_protocol_value.capacity ());
+      sqlite::value_traits<
+          ::std::string,
+          sqlite::id_text >::set_image (
+        i.propagation_protocol_value,
+        i.propagation_protocol_size,
+        is_null,
+        v);
+      i.propagation_protocol_null = is_null;
+      grew = grew || (cap != i.propagation_protocol_value.capacity ());
+    }
+
     return grew;
   }
 
@@ -15655,6 +15693,21 @@ namespace odb
             obj_traits::object_type > (id));
       }
     }
+
+    // propagation_protocol_
+    //
+    {
+      ::std::string& v =
+        o.propagation_protocol_;
+
+      sqlite::value_traits<
+          ::std::string,
+          sqlite::id_text >::set_value (
+        v,
+        i.propagation_protocol_value,
+        i.propagation_protocol_size,
+        i.propagation_protocol_null);
+    }
   }
 
   void access::object_traits_impl< ::CoinDB::Tx, id_sqlite >::
@@ -15687,9 +15740,10 @@ namespace odb
   "\"txout_total\", "
   "\"blockheader\", "
   "\"blockindex\", "
-  "\"user\") "
+  "\"user\", "
+  "\"propagation_protocol\") "
   "VALUES "
-  "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
   const char access::object_traits_impl< ::CoinDB::Tx, id_sqlite >::find_statement[] =
   "SELECT "
@@ -15706,7 +15760,8 @@ namespace odb
   "\"Tx\".\"txout_total\", "
   "\"Tx\".\"blockheader\", "
   "\"Tx\".\"blockindex\", "
-  "\"Tx\".\"user\" "
+  "\"Tx\".\"user\", "
+  "\"Tx\".\"propagation_protocol\" "
   "FROM \"Tx\" "
   "WHERE \"Tx\".\"id\"=?";
 
@@ -15725,7 +15780,8 @@ namespace odb
   "\"txout_total\"=?, "
   "\"blockheader\"=?, "
   "\"blockindex\"=?, "
-  "\"user\"=? "
+  "\"user\"=?, "
+  "\"propagation_protocol\"=? "
   "WHERE \"id\"=?";
 
   const char access::object_traits_impl< ::CoinDB::Tx, id_sqlite >::erase_statement[] =
@@ -15747,7 +15803,8 @@ namespace odb
   "\"Tx\".\"txout_total\",\n"
   "\"Tx\".\"blockheader\",\n"
   "\"Tx\".\"blockindex\",\n"
-  "\"Tx\".\"user\"\n"
+  "\"Tx\".\"user\",\n"
+  "\"Tx\".\"propagation_protocol\"\n"
   "FROM \"Tx\"\n"
   "LEFT JOIN \"BlockHeader\" AS \"blockheader\" ON \"blockheader\".\"id\"=\"Tx\".\"blockheader\"\n"
   "LEFT JOIN \"User\" AS \"user\" ON \"user\".\"id\"=\"Tx\".\"user\"";
@@ -16472,11 +16529,11 @@ namespace odb
     r += "FROM \"Keychain\"";
 
     r += " LEFT JOIN \"Account_keychains\" AS \"t\" ON";
-    // From Schema.h:1469:5
+    // From Schema.h:1484:5
     r += "t.value = " + query_columns::Keychain::id;
 
     r += " LEFT JOIN \"Account\" ON";
-    // From Schema.h:1470:5
+    // From Schema.h:1485:5
     r += "t.object_id = " + query_columns::Account::id;
 
     if (!q.empty ())
@@ -19251,7 +19308,7 @@ namespace odb
     r += "\"MerkleBlock\".\"blockheader\"=\"BlockHeader\".\"id\"";
 
     query_base_type c (
-      // From Schema.h:1825:2
+      // From Schema.h:1840:2
       query_columns::MerkleBlock::txsinserted == true);
 
     c += q;
@@ -20026,11 +20083,11 @@ namespace odb
     r += "FROM \"Tx\"";
 
     r += " LEFT JOIN \"MerkleBlock_hashes\" AS \"t\" ON";
-    // From Schema.h:1866:5
+    // From Schema.h:1881:5
     r += "t.value = " + query_columns::Tx::hash;
 
     r += " LEFT JOIN \"MerkleBlock\" ON";
-    // From Schema.h:1867:5
+    // From Schema.h:1882:5
     r += "t.object_id = " + query_columns::MerkleBlock::id;
 
     r += " LEFT JOIN \"BlockHeader\" ON";
@@ -20162,7 +20219,7 @@ namespace odb
     r += "FROM \"MerkleBlock\"";
 
     query_base_type c (
-      // From Schema.h:1891:25
+      // From Schema.h:1906:25
       query_columns::txsinserted == false);
 
     c += q;
@@ -20566,6 +20623,7 @@ namespace odb
                       "  \"blockheader\" INTEGER NULL,\n"
                       "  \"blockindex\" INTEGER NULL,\n"
                       "  \"user\" INTEGER NULL,\n"
+                      "  \"propagation_protocol\" TEXT NOT NULL,\n"
                       "  CONSTRAINT \"blockheader_fk\"\n"
                       "    FOREIGN KEY (\"blockheader\")\n"
                       "    REFERENCES \"BlockHeader\" (\"id\")\n"
@@ -20586,7 +20644,7 @@ namespace odb
                       "  \"migration\" INTEGER NOT NULL)");
           db.execute ("INSERT OR IGNORE INTO \"schema_version\" (\n"
                       "  \"name\", \"version\", \"migration\")\n"
-                      "  VALUES ('', 16, 0)");
+                      "  VALUES ('', 17, 0)");
           return false;
         }
       }
@@ -20845,6 +20903,60 @@ namespace odb
     "",
     16ULL,
     &migrate_schema_16);
+
+  static bool
+  migrate_schema_17 (database& db, unsigned short pass, bool pre)
+  {
+    ODB_POTENTIALLY_UNUSED (db);
+    ODB_POTENTIALLY_UNUSED (pass);
+    ODB_POTENTIALLY_UNUSED (pre);
+
+    if (pre)
+    {
+      switch (pass)
+      {
+        case 1:
+        {
+          db.execute ("ALTER TABLE \"Tx\"\n"
+                      "  ADD COLUMN \"propagation_protocol\" TEXT NULL");
+          return true;
+        }
+        case 2:
+        {
+          db.execute ("UPDATE \"schema_version\"\n"
+                      "  SET \"version\" = 17, \"migration\" = 1\n"
+                      "  WHERE \"name\" = ''");
+          return false;
+        }
+      }
+    }
+    else
+    {
+      switch (pass)
+      {
+        case 1:
+        {
+          return true;
+        }
+        case 2:
+        {
+          db.execute ("UPDATE \"schema_version\"\n"
+                      "  SET \"migration\" = 0\n"
+                      "  WHERE \"name\" = ''");
+          return false;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  static const schema_catalog_migrate_entry
+  migrate_schema_entry_17_ (
+    id_sqlite,
+    "",
+    17ULL,
+    &migrate_schema_17);
 }
 
 #include <odb/post.hxx>
